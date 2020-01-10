@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbRoleDao">
+
+    <resultMap type="com.jsj.bs.pojo.TbRole" id="TbRoleMap">
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbRoleMap">
+        select
+          role_id, role_name
+        from tb_role
+        where role_id = #{roleId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByUserAccount" resultType="string">
+       SELECT r.role_name
+        FROM tb_user u,tb_role r
+        WHERE u.role_id=r.role_id
+        AND u.user_account = #{account}
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByLeaderAccount" resultType="string">
+        SELECT r.role_name
+        FROM tb_leader l,tb_role r
+        WHERE l.role_id=r.role_id
+        AND l.leader_account= #{account}
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByAdminAccount" resultType="string">
+        SELECT r.role_name
+        FROM tb_admin a,tb_role r
+        WHERE a.role_id=r.role_id
+        AND a.admin_account= #{account}
+    </select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--扫描controller层-->
+    <context:component-scan base-package="com.jsj.bs.controller com.jsj.bs.captcha.view"/>
+    <!--开启注解驱动:用来替换处理器适配器和处理器映射器-->
+    <mvc:annotation-driven/>
+    <!--释放静态资源-->
+    <mvc:default-servlet-handler/>
+    <!--视图解析器-->
+    <mvc:resources mapping="/resources/**" location="/resources/"></mvc:resources>
+    <mvc:resources mapping="/page/**" location="/page/"></mvc:resources>
+    <!--添加前后缀-->
+    <mvc:view-resolvers>
+        <mvc:jsp prefix="/page/" suffix=".jsp"/>
+    </mvc:view-resolvers>
+    <!--控制器中我采用的是redirect关键字，但是，重定向后的参数肯定要拼接到url后面-->
+    <mvc:annotation-driven ignore-default-model-on-redirect="true"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/tbUser/login-user"/>
+            <bean class="com.jsj.bs.captcha.interceptor.CaptchaAuthenticationInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <!-- 文件上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="#{1024 * 1024 * 10}"></property>
+        <property name="maxUploadSizePerFile" value="#{1024 * 1024 * 5}"></property>
+        <property name="maxInMemorySize" value="#{1024}"></property>
+        <property name="defaultEncoding" value="utf-8"></property>
+    </bean>
+</beans>

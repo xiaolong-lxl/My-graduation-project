@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbUserDao">
+
+    <resultMap type="com.jsj.bs.pojo.TbUser" id="TbUserMap">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="userTel" column="user_tel" jdbcType="VARCHAR"/>
+        <result property="userEmail" column="user_email" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
+        <result property="userLocked" column="user_locked" jdbcType="BOOLEAN"/>
+        <result property="createTime" column="create_time" jdbcType="BOOLEAN"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbUserMap">
+        select
+          user_id, user_account, user_password, username, user_tel, user_email, is_deleted, user_locked, create_time, role_id
+        from tb_user
+        where user_account = #{userAccount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbUserMap">
+        select
+          user_id, user_account, user_password, username, user_tel, user_email, is_deleted, user_locked, create_time,role_id
+        from tb_user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                and user_account = #{userAccount}
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                and user_password = #{userPassword}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="userTel != null and userTel != ''">
+                and user_tel = #{userTel}
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                and user_email = #{userEmail}
+            </if>
+            <if test="isDeleted != null">
+                and is_deleted = #{isDeleted}
+            </if>
+            <if test="userLocked != null">
+                and user_locked = #{userLocked}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+        </where>
+    </select>
+    <!--查询审核通过 userLocked-->
+    <select id="queryStatus" resultType="java.lang.Boolean">
+        select
+          user_locked
+        from tb_user
+        where user_account = #{userAccount}
+    </select>
+
+    <!--登陆 queryByAccount-->
+    <select id="queryByAccount" resultMap="TbUserMap">
+        select
+          user_id, user_account, user_password, username, user_tel, user_email, is_deleted, user_locked, create_time, role_id
+        from tb_user
+        where user_account = #{userAccount} and user_password = #{userPassword}
+    </select>
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into tb_user(user_account, user_password, username, user_tel, user_email, create_time,role_id)
+        values (#{userAccount}, #{userPassword}, #{username}, #{userTel}, #{userEmail}, #{createTime}, #{roleId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_user
+        <set>
+            <if test="userAccount != null and userAccount != ''">
+                user_account = #{userAccount},
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                user_password = #{userPassword},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="userTel != null and userTel != ''">
+                user_tel = #{userTel},
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                user_email = #{userEmail},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+            <if test="userLocked != null">
+                user_locked = #{userLocked},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where  user_account= #{userAccount}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_user where user_id = #{userId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbQingjiaDao">
+
+    <resultMap type="com.jsj.bs.pojo.TbQingjia" id="TbQingjiaMap">
+        <result property="qingjiaId" column="qingjia_id" jdbcType="INTEGER"/>
+        <result property="qingjiaTitle" column="qingjia_title" jdbcType="VARCHAR"/>
+        <result property="leaderName" column="leader_name" jdbcType="VARCHAR"/>
+        <result property="leaderTel" column="leader_tel" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="qingjiaWhy" column="qingjia_why" jdbcType="VARCHAR"/>
+        <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
+        <result property="hasAllow" column="has_allow" jdbcType="BOOLEAN"/>
+        <result property="addTime" column="add_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="qingjiaSql">
+        ${asQ}.qingjia_id,${asQ}.qingjia_title,${asQ}.leader_name,${asQ}.leader_tel,
+        ${asQ}.start_time,${asQ}.end_time,${asQ}.qingjia_why,${asQ}.leader_id,${asQ}.has_allow,${asQ}.add_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbQingjiaMap">
+        select
+        <include refid="qingjiaSql">
+            <property name="asQ" value="q"/>
+        </include>
+        from tb_qingjia q
+        where q.qingjia_id = #{qingjiaId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbQingjiaMap">
+        select
+        <include refid="qingjiaSql">
+            <property name="asQ" value="q"/>
+        </include>
+        from tb_qingjia q
+        <where>
+            <if test="qingjiaId != null">
+                and q.qingjia_id = #{qingjiaId}
+            </if>
+            <if test="qingjiaTitle != null and qingjiaTitle != ''">
+                and q.qingjia_title = #{qingjiaTitle}
+            </if>
+            <if test="leaderName != null and leaderName != ''">
+                and q.leader_name = #{leaderName}
+            </if>
+            <if test="leaderTel != null and leaderTel != ''">
+                and q.leader_tel = #{leaderTel}
+            </if>
+            <if test="startTime != null">
+                and q.start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and q.end_time = #{endTime}
+            </if>
+            <if test="qingjiaWhy != null and qingjiaWhy != ''">
+                and q.qingjia_why = #{qingjiaWhy}
+            </if>
+            <if test="leaderId != null">
+                and q.leader_id = #{leaderId}
+            </if>
+            <if test="hasAllow != null">
+                and q.has_allow = #{hasAllow}
+            </if>
+            <if test="addTime != null">
+                and q.add_time = #{addTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="qingjiaId" useGeneratedKeys="true">
+        insert into tb_qingjia(qingjia_title, leader_name, leader_tel, start_time, end_time, qingjia_why, leader_id, has_allow,add_time)
+        values (#{qingjiaTitle}, #{leaderName}, #{leaderTel}, #{startTime}, #{endTime}, #{qingjiaWhy}, #{leaderId}, 1 ,#{addTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_qingjia q
+        <set>
+            <if test="qingjiaTitle != null and qingjiaTitle != ''">
+                q.qingjia_title = #{qingjiaTitle},
+            </if>
+            <if test="leaderName != null and leaderName != ''">
+                q.leader_name = #{leaderName},
+            </if>
+            <if test="leaderTel != null and leaderTel != ''">
+                q.leader_tel = #{leaderTel},
+            </if>
+            <if test="startTime != null">
+                q.start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                q.end_time = #{endTime},
+            </if>
+            <if test="qingjiaWhy != null and qingjiaWhy != ''">
+                q.qingjia_why = #{qingjiaWhy},
+            </if>
+            <if test="leaderId != null">
+                q.leader_id = #{leaderId},
+            </if>
+            <if test="hasAllow != null">
+                q.has_allow = #{hasAllow},
+            </if>
+            <if test="addTime != null">
+                q.add_time = #{addTime},
+            </if>
+        </set>
+        where q.qingjia_id = #{qingjiaId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_qingjia where qingjia_id = #{qingjiaId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbOrderDao">
+    <!--resultMap:用来描述如何从数据库结果集中加载对象-->
+    <resultMap type="com.jsj.bs.pojo.TbOrder" id="TbOrderMap">
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="machineModel" column="machine_model" jdbcType="VARCHAR"/>
+        <result property="problemLever" column="problem_lever" jdbcType="VARCHAR"/>
+        <result property="lianxiUser" column="lianxi_user" jdbcType="VARCHAR"/>
+        <result property="lianxiTel" column="lianxi_tel" jdbcType="VARCHAR"/>
+        <result property="problemDesc" column="problem_desc" jdbcType="VARCHAR"/>
+        <result property="machineAddress" column="machine_address" jdbcType="VARCHAR"/>
+        <result property="addTime" column="add_time" jdbcType="TIMESTAMP"/>
+        <result property="orderImg1" column="order_img1" jdbcType="VARCHAR"/>
+        <result property="orderImg2" column="order_img2" jdbcType="VARCHAR"/>
+        <result property="statu" column="statu" jdbcType="VARCHAR"/>
+        <result property="statuDesc" column="statu_desc" jdbcType="VARCHAR"/>
+        <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
+        <association property="tbLeader" javaType="com.jsj.bs.pojo.TbLeader">
+            <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
+            <result property="leaderAccount" column="leader_account" jdbcType="VARCHAR"/>
+            <result property="leaderPassword" column="leader_password" jdbcType="VARCHAR"/>
+            <result property="leaderName" column="leader_name" jdbcType="VARCHAR"/>
+            <result property="leaderLocked" column="leader_locked" jdbcType="BOOLEAN"/>
+        </association>
+    </resultMap>
+    <resultMap type="com.jsj.bs.pojo.TbOrder" id="TbOrderMap2">
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="machineModel" column="machine_model" jdbcType="VARCHAR"/>
+        <result property="problemLever" column="problem_lever" jdbcType="VARCHAR"/>
+        <result property="lianxiUser" column="lianxi_user" jdbcType="VARCHAR"/>
+        <result property="lianxiTel" column="lianxi_tel" jdbcType="VARCHAR"/>
+        <result property="problemDesc" column="problem_desc" jdbcType="VARCHAR"/>
+        <result property="machineAddress" column="machine_address" jdbcType="VARCHAR"/>
+        <result property="addTime" column="add_time" jdbcType="TIMESTAMP"/>
+        <result property="orderImg1" column="order_img1" jdbcType="VARCHAR"/>
+        <result property="orderImg2" column="order_img2" jdbcType="VARCHAR"/>
+        <result property="statu" column="statu" jdbcType="VARCHAR"/>
+        <result property="statuDesc" column="statu_desc" jdbcType="VARCHAR"/>
+        <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
+    </resultMap>
+    <!--sql:可被其他语句引用的可重用语句块。可以跨Mapper引用，跨Mapper引用需要加名称空间-->
+    <sql id="orderSql">
+        ${alias}.order_id,${alias}.machine_model,${alias}.problem_lever,${alias}.lianxi_user,
+        ${alias}.lianxi_tel,${alias}.problem_desc,${alias}.machine_address,${alias}.add_time,
+        ${alias}.order_img1,${alias}.order_img2,${alias}.statu,${alias}.statu_desc,${alias}.leader_id,${alias}.is_deleted
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbOrderMap2">
+        select
+        <include refid="orderSql">
+            <property name="alias" value="o1"/>
+        </include>
+        from tb_order o1
+        where o1.order_id = #{orderId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbOrderMap">
+        SELECT
+        <include refid="orderSql">
+            <property name="alias" value="o1"/>
+        </include>,
+        <include refid="com.jsj.bs.dao.TbLeaderDao.leaderSql">
+            <property name="asL" value="l1"/>
+        </include>
+        FROM tb_order o1
+        inner join tb_leader l1
+        on o1.leader_id=l1.leader_id
+        <where>
+            <if test="orderId != null">
+                and o1.order_id = #{orderId}
+            </if>
+            <if test="machineModel != null and machineModel != ''">
+                and o1.machine_model = #{machineModel}
+            </if>
+            <if test="problemLever != null and problemLever != ''">
+                and o1.problem_lever = #{problemLever}
+            </if>
+            <if test="lianxiUser != null">
+                and o1.lianxi_user = #{lianxiUser}
+            </if>
+            <if test="lianxiTel != null">
+                and o1.lianxi_tel = #{lianxiTel}
+            </if>
+            <if test="problemDesc != null and problemDesc != ''">
+                and o1.problem_desc = #{problemDesc}
+            </if>
+            <if test="machineAddress != null and machineAddress != ''">
+                and o1.machine_address = #{machineAddress}
+            </if>
+            <if test="addTime != null">
+                and o1.add_time = #{addTime}
+            </if>
+            <if test="orderImg1 != null and orderImg1 !=''">
+                and o1.order_img1 = #{orderImg1}
+            </if>
+            <if test="orderImg2 != null and orderImg2 !=''">
+                and o1.order_img2 = #{orderImg2}
+            </if>
+            <if test="statu != null">
+                and o1.status = #{statu}
+            </if>
+            <if test="leaderId != null">
+                and o1.leader_id = #{leaderId}
+            </if>
+            <if test="isDeleted != null">
+                and o1.is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="orderId" useGeneratedKeys="true">
+        insert into tb_order(machine_model, problem_lever, lianxi_user,lianxi_tel, problem_desc, machine_address, add_time,order_img1,order_img2,statu, leader_id,is_deleted)
+        values (#{machineModel}, #{problemLever},#{lianxiUser}, #{lianxiTel},#{problemDesc}, #{machineAddress}, #{addTime},#{orderImg1},#{orderImg2},'未指派', #{leaderId},0)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_order o
+        <set>
+            <if test="machineModel != null and machineModel != ''">
+                o.machine_model = #{machineModel},
+            </if>
+            <if test="problemLever != null and problemLever != ''">
+                o.problem_lever = #{problemLever},
+            </if>
+            <if test="lianxiUser != null and lianxiUser != ''">
+                o.lianxi_user = #{lianxiUser},
+            </if>
+            <if test="lianxiTel != null and lianxiTel != ''">
+                o.lianxi_tel = #{lianxiTel},
+            </if>
+            <if test="problemDesc != null and problemDesc != ''">
+                o.problem_desc = #{problemDesc},
+            </if>
+            <if test="machineAddress != null and machineAddress != ''">
+                o.machine_address = #{machineAddress},
+            </if>
+            <if test="addTime != null">
+                o.add_time = #{addTime},
+            </if>
+            <if test="orderImg1 != null and orderImg1 !=''">
+                o.order_img1 = #{orderImg1},
+            </if>
+            <if test="orderImg2 != null and orderImg2 !=''">
+                o.order_img2 = #{orderImg2},
+            </if>
+            <if test="statu != null">
+                o.statu = #{statu},
+            </if>
+            <if test="statuDesc != null">
+                o.statu_desc = #{statuDesc},
+            </if>
+            <if test="leaderId != null">
+                o.leader_id = #{leaderId},
+            </if>
+            <if test="isDeleted != null">
+                o.is_deleted = #{isDeleted},
+            </if>
+        </set>
+        where o.order_id = #{orderId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_order  where order_id = #{orderId}
+    </delete>
+
+</mapper>

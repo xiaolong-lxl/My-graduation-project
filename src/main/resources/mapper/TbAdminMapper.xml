@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbAdminDao">
+
+    <resultMap type="com.jsj.bs.pojo.TbAdmin" id="TbAdminMap">
+        <result property="adminId" column="admin_id" jdbcType="INTEGER"/>
+        <result property="adminAccount" column="admin_account" jdbcType="VARCHAR"/>
+        <result property="adminPassword" column="admin_password" jdbcType="VARCHAR"/>
+        <result property="adminName" column="admin_name" jdbcType="VARCHAR"/>
+        <result property="adminLocked" column="admin_locked" jdbcType="BOOLEAN"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--sql:可被其他语句引用的可重用语句块。可以跨Mapper引用，跨Mapper引用需要加名称空间-->
+    <sql id="leaderSql">
+        ${asA}.admin_id,${asA}.admin_account,${asA}.admin_password,
+        ${asA}.admin_name,${asA}.admin_locked,${asA}.role_id
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbAdminMap">
+        select
+        <include refid="leaderSql">
+            <property name="asA" value="a"/>
+        </include>
+        from tb_admin a
+        where a.admin_id = #{adminId}
+    </select>
+    <!--查询 Locked-->
+    <select id="queryStatus" resultType="java.lang.Boolean">
+        select
+          admin_locked
+        from tb_admin a
+        where a.admin_account = #{adminAccount}
+    </select>
+
+    <!--登陆 queryByAccount-->
+    <select id="queryByAccount" resultMap="TbAdminMap">
+        select
+        <include refid="leaderSql">
+            <property name="asA" value="a"/>
+        </include>
+        from tb_admin a
+        where a.admin_account = #{adminAccount} and a.admin_password = #{adminPassword}
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbAdminMap">
+        select
+        <include refid="leaderSql">
+            <property name="asA" value="a"/>
+        </include>
+        from tb_admin a
+        <where>
+            <if test="adminId != null">
+                and a.admin_id = #{adminId}
+            </if>
+            <if test="adminAccount != null and adminAccount != ''">
+                and a.admin_account = #{adminAccount}
+            </if>
+            <if test="adminPassword != null and adminPassword != ''">
+                and a.admin_password = #{adminPassword}
+            </if>
+            <if test="adminName != null and adminName != ''">
+                and a.admin_name = #{adminName}
+            </if>
+            <if test="adminLocked != null">
+                and a.admin_locked = #{adminLocked}
+            </if>
+            <if test="roleId != null">
+                and a.role_id = #{roleId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="adminId" useGeneratedKeys="true">
+        insert into tb_admin(admin_account, admin_password, admin_name, admin_locked,role_id)
+        values (#{adminAccount}, #{adminPassword}, #{adminName}, #{adminLocked}, #{role_id})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_admin a
+        <set>
+            <if test="adminAccount != null and adminAccount != ''">
+                a.admin_account = #{adminAccount},
+            </if>
+            <if test="adminPassword != null and adminPassword != ''">
+                a.admin_password = #{adminPassword},
+            </if>
+            <if test="adminName != null and adminName != ''">
+                a.admin_name = #{adminName},
+            </if>
+            <if test="adminLocked != null">
+                a.admin_locked = #{adminLocked},
+            </if>
+            <if test="roleId != null">
+                a.role_id = #{roleId}
+            </if>
+        </set>
+        where a.admin_id = #{adminId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_admin a where a.admin_id = #{adminId}
+    </delete>
+
+</mapper>

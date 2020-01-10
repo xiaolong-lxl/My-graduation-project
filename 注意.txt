@@ -1,0 +1,7 @@
+在  f盘创建 upload文件夹
+
+
+在idea 配置 上传文档路劲  下面是CSDN的教程
+
+
+https://blog.csdn.net/qq_43122641/article/details/100827234

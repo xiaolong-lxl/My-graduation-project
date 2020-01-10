@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsj.bs.dao.TbGaipaiDao">
+
+    <resultMap type="com.jsj.bs.pojo.TbGaipai" id="TbGaipaiMap">
+        <result property="gaipaiId" column="gaipai_id" jdbcType="INTEGER"/>
+        <result property="gaipaiTitle" column="gaipai_title" jdbcType="VARCHAR"/>
+        <result property="gaipaiWhy" column="gaipai_why" jdbcType="VARCHAR"/>
+        <result property="gaipaiDate" column="gaipai_date" jdbcType="TIMESTAMP"/>
+        <result property="gaipaiStatu" column="gaipai_statu" jdbcType="VARCHAR"/>
+        <result property="leaderId" column="leader_id" jdbcType="INTEGER"/>
+        <result property="odertId" column="odert_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="gaipaiSql">
+    ${asG}.gaipai_id,${asG}.gaipai_title,${asG}.gaipai_why,
+    ${asG}.gaipai_date,${asG}.gaipai_statu,${asG}.leader_id,${asG}.odert_id,${asG}.is_deleted
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbGaipaiMap">
+        select
+          <include refid="gaipaiSql">
+              <property name="asG" value="g"/>
+          </include>
+        from tb_gaipai g
+        where g.gaipai_id = #{gaipaiId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbGaipaiMap">
+        select
+        <include refid="gaipaiSql">
+            <property name="asG" value="g"/>
+        </include>
+        from tb_gaipai g
+        <where>
+            <if test="gaipaiId != null">
+                and g.gaipai_id = #{gaipaiId}
+            </if>
+            <if test="gaipaiTitle != null and gaipaiTitle != ''">
+                and g.gaipai_title = #{gaipaiTitle}
+            </if>
+            <if test="gaipaiWhy != null and gaipaiWhy != ''">
+                and g.gaipai_why = #{gaipaiWhy}
+            </if>
+            <if test="gaipaiDate != null">
+                and g.gaipai_date = #{gaipaiDate}
+            </if>
+            <if test="gaipaiStatu != null and gaipaiStatu != ''">
+                and g.gaipai_statu = #{gaipaiStatu}
+            </if>
+            <if test="leaderId != null">
+                and g.leader_id = #{leaderId}
+            </if>
+            <if test="odertId != null">
+                and g.odert_id = #{odertId}
+            </if>
+            <if test="isDeleted != null">
+                and g.is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="gaipaiId" useGeneratedKeys="true">
+        insert into tb_gaipai(gaipai_title, gaipai_why, gaipai_date, gaipai_statu, leader_id, odert_id, is_deleted)
+        values (#{gaipaiTitle}, #{gaipaiWhy}, #{gaipaiDate}, '未查看', #{leaderId},#{odertId}, 1)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_gaipai g
+        <set>
+            <if test="gaipaiTitle != null and gaipaiTitle != ''">
+                g.gaipai_title = #{gaipaiTitle},
+            </if>
+            <if test="gaipaiWhy != null and gaipaiWhy != ''">
+                g.gaipai_why = #{gaipaiWhy},
+            </if>
+            <if test="gaipaiDate != null">
+                g.gaipai_date = #{gaipaiDate},
+            </if>
+            <if test="gaipaiStatu != null and gaipaiStatu != ''">
+                g.gaipai_statu = #{gaipaiStatu},
+            </if>
+            <if test="odertId != null">
+                g.odert_id = #{odertId},
+            </if>
+            <if test="leaderId != null">
+                g.leader_id = #{leaderId},
+            </if>
+            <if test="isDeleted != null">
+                g.is_deleted = #{isDeleted},
+            </if>
+        </set>
+        where g.gaipai_id = #{gaipaiId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_gaipai where gaipai_id = #{gaipaiId}
+    </delete>
+
+</mapper>
