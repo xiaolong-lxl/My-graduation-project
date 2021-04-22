@@ -20,7 +20,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <!--依赖版本属性:版本的依赖关系可以查询maven中央仓库-->
         <org.springframework-version>5.2.0.RELEASE</org.springframework-version>
-        <org.mybatis-version>3.5.3</org.mybatis-version>
+        <org.mybatis-version>3.5.6</org.mybatis-version>
         <mysql-connector-version>5.1.6</mysql-connector-version>
         <org.mybatis.spring-version>2.0.3</org.mybatis.spring-version>
         <log4j2-version>2.11.2</log4j2-version>
